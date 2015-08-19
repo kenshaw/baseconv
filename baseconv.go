@@ -3,7 +3,7 @@ package baseconv
 
 import "strings"
 
-// Convert string
+// Convert num from specified base to a different base.
 func Convert(num, fromBase, toBase string) string {
 	fromLen := len(fromBase)
 	toLen := len(toBase)
