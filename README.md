@@ -3,7 +3,8 @@
 A simple [Go](http://www.golang.org/project/) package for converting between
 strings in arbitrary bases.
 
-This is similar in concept to [PHP's ```base\_convert```](http://php.net/manual/en/function.base-convert.php).
+This is similar in concept to PHP's [```base_convert```](http://php.net/manual/en/function.base-convert.php) 
+function.
 
 ## Installation ##
 
