@@ -2,6 +2,33 @@ package baseconv
 
 import "testing"
 
+func TestErrors(t *testing.T) {
+	_, err := Convert("", DigitsHex, DigitsDec)
+	if err == nil {
+		t.Error("bad string should return error")
+	}
+
+	_, err = Convert("0", "", DigitsDec)
+	if err == nil {
+		t.Error("bad fromBase should return error")
+	}
+
+	_, err = Convert("0", DigitsDec, "")
+	if err == nil {
+		t.Error("bad toBase should return error")
+	}
+
+	_, err = Convert("bad", DigitsBin, DigitsDec)
+	if err == nil {
+		t.Error("bad string should return error")
+	}
+
+	_, err = Convert("BAD", DigitsHex, DigitsDec)
+	if err == nil {
+		t.Error("bad string should return error")
+	}
+}
+
 func TestDec2Bin(t *testing.T) {
 	tests := map[string]string{
 		"0":     "0",
@@ -13,11 +40,18 @@ func TestDec2Bin(t *testing.T) {
 	}
 
 	for n, exp := range tests {
-		v0 := Convert(n, DigitsDec, DigitsBin)
+		v0, err := Convert(n, DigitsDec, DigitsBin)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestDec2Bin(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, DigitsBin, DigitsDec)
+
+		v1, err := Convert(exp, DigitsBin, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestBin2Dec(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -35,11 +69,18 @@ func TestDec2Hex(t *testing.T) {
 	}
 
 	for n, exp := range tests {
-		v0 := Convert(n, DigitsDec, DigitsHex)
+		v0, err := Convert(n, DigitsDec, DigitsHex)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestDec2Hex(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, DigitsHex, DigitsDec)
+
+		v1, err := Convert(exp, DigitsHex, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestHex2Dec(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -62,11 +103,18 @@ func TestDec2SixtyTwo(t *testing.T) {
 	}
 
 	for n, exp := range tests {
-		v0 := Convert(n, DigitsDec, Digits62)
+		v0, err := Convert(n, DigitsDec, Digits62)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestDec2SixtyTwo(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, Digits62, DigitsDec)
+
+		v1, err := Convert(exp, Digits62, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestSixtyTwo2Dec(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -81,11 +129,18 @@ func TestArbitrary(t *testing.T) {
 	arbDigits := "Christopher"
 
 	for n, exp := range tests {
-		v0 := Convert(n, DigitsDec, arbDigits)
+		v0, err := Convert(n, DigitsDec, arbDigits)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestBin2Hex(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, arbDigits, DigitsDec)
+
+		v1, err := Convert(exp, arbDigits, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestHex2Bin(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -99,11 +154,18 @@ func TestHex2Bin(t *testing.T) {
 	}
 
 	for n, exp := range tests {
-		v0 := Convert(n, DigitsHex, DigitsBin)
+		v0, err := Convert(n, DigitsHex, DigitsBin)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestBin2Hex(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, DigitsBin, DigitsHex)
+
+		v1, err := Convert(exp, DigitsBin, DigitsHex)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestHex2Bin(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -120,11 +182,18 @@ func TestSixtyTwo2Hex(t *testing.T) {
 	}
 
 	for n, exp := range tests {
-		v0 := Convert(n, Digits62, DigitsHex)
+		v0, err := Convert(n, Digits62, DigitsHex)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v0 {
 			t.Errorf("on TestSixtyTwo2Hex(%s) expected %s, got: %s", n, exp, v0)
 		}
-		v1 := Convert(exp, DigitsHex, Digits62)
+
+		v1, err := Convert(exp, DigitsHex, Digits62)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if n != v1 {
 			t.Errorf("on TestHex2SixtyTwo(%s) expected %s, got: %s", exp, n, v1)
 		}
@@ -134,7 +203,7 @@ func TestSixtyTwo2Hex(t *testing.T) {
 func TestEncodeDecode(t *testing.T) {
 	v0 := "1627734050041231452076"
 
-	efuncs := []func(string, ...string) string{
+	efuncs := []func(string, ...string) (string, error){
 		EncodeBin,
 		EncodeOct,
 		EncodeHex,
@@ -143,7 +212,7 @@ func TestEncodeDecode(t *testing.T) {
 		Encode64,
 	}
 
-	dfuncs := []func(string, ...string) string{
+	dfuncs := []func(string, ...string) (string, error){
 		DecodeBin,
 		DecodeOct,
 		DecodeHex,
@@ -171,20 +240,34 @@ func TestEncodeDecode(t *testing.T) {
 	}
 
 	for i, exp := range evals {
-		v1 := efuncs[i](v0)
+		v1, err := efuncs[i](v0)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v1 {
 			t.Errorf("values %s / %s should match", exp, v1)
 		}
-		v2 := dfuncs[i](v1)
+
+		v2, err := dfuncs[i](v1)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if v0 != v2 {
 			t.Errorf("values %s / %s should match", v0, v2)
 		}
 
-		v3 := efuncs[i](v0, DigitsDec)
+		v3, err := efuncs[i](v0, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if exp != v3 {
 			t.Errorf("values %s / %s should match", exp, v3)
 		}
-		v4 := dfuncs[i](v1, DigitsDec)
+
+		v4, err := dfuncs[i](v1, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
 		if v0 != v4 {
 			t.Errorf("values %s / %s should match", v0, v4)
 		}

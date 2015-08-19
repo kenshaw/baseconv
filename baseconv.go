@@ -1,10 +1,26 @@
 // Converts a string in an arbitrary base to any other arbitrary base.
 package baseconv
 
-import "strings"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 // Convert num from specified base to a different base.
-func Convert(num, fromBase, toBase string) string {
+func Convert(num, fromBase, toBase string) (string, error) {
+	if num == "" {
+		return "", errors.New("invalid number")
+	}
+
+	if len(fromBase) < 2 {
+		return "", errors.New("invalid fromBase")
+	}
+
+	if len(toBase) < 2 {
+		return "", errors.New("invalid toBase")
+	}
+
 	fromLen := len(fromBase)
 	toLen := len(toBase)
 	numLen := len(num)
@@ -13,6 +29,9 @@ func Convert(num, fromBase, toBase string) string {
 	number := make([]int, numLen)
 	for i := 0; i < numLen; i++ {
 		number[i] = strings.IndexByte(fromBase, num[i])
+		if number[i] < 0 {
+			return "", errors.New(fmt.Sprintf("invalid character '%c' at %d", num[i], i))
+		}
 	}
 
 	// loop until whole number is converted
@@ -41,7 +60,7 @@ func Convert(num, fromBase, toBase string) string {
 		}
 	}
 
-	return result
+	return result, nil
 }
 
 const (
@@ -55,7 +74,7 @@ const (
 )
 
 // Encode a string into DigitsBin with optional specified base (default: DigitsDec).
-func EncodeBin(num string, base ...string) string {
+func EncodeBin(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -65,7 +84,7 @@ func EncodeBin(num string, base ...string) string {
 }
 
 // Decode a string from DigitsBin with optional specified base (default: DigitsDec).
-func DecodeBin(num string, base ...string) string {
+func DecodeBin(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
@@ -75,7 +94,7 @@ func DecodeBin(num string, base ...string) string {
 }
 
 // Encode a string into DigitsOct with optional specified base (default: DigitsDec).
-func EncodeOct(num string, base ...string) string {
+func EncodeOct(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -85,7 +104,7 @@ func EncodeOct(num string, base ...string) string {
 }
 
 // Decode a string from DigitsOct with optional specified base (default: DigitsDec).
-func DecodeOct(num string, base ...string) string {
+func DecodeOct(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
@@ -95,7 +114,7 @@ func DecodeOct(num string, base ...string) string {
 }
 
 // Encode a string into DigitsHex with optional specified base (default: DigitsDec).
-func EncodeHex(num string, base ...string) string {
+func EncodeHex(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -105,7 +124,7 @@ func EncodeHex(num string, base ...string) string {
 }
 
 // Decode a string from DigitsHex with optional specified base (default: DigitsDec).
-func DecodeHex(num string, base ...string) string {
+func DecodeHex(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
@@ -115,7 +134,7 @@ func DecodeHex(num string, base ...string) string {
 }
 
 // Encode a string into Digits36 with optional specified base (default: DigitsDec).
-func Encode36(num string, base ...string) string {
+func Encode36(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -125,7 +144,7 @@ func Encode36(num string, base ...string) string {
 }
 
 // Decode a string from Digits36 with optional specified base (default: DigitsDec).
-func Decode36(num string, base ...string) string {
+func Decode36(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
@@ -135,7 +154,7 @@ func Decode36(num string, base ...string) string {
 }
 
 // Encode a string into Digits62 with optional specified base (default: DigitsDec).
-func Encode62(num string, base ...string) string {
+func Encode62(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -145,7 +164,7 @@ func Encode62(num string, base ...string) string {
 }
 
 // Decode a string from Digits62 with optional specified base (default: DigitsDec).
-func Decode62(num string, base ...string) string {
+func Decode62(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
@@ -155,7 +174,7 @@ func Decode62(num string, base ...string) string {
 }
 
 // Encode a string into Digits64 with optional specified base (default: DigitsDec).
-func Encode64(num string, base ...string) string {
+func Encode64(num string, base ...string) (string, error) {
 	from := DigitsDec
 	if len(base) > 0 {
 		from = base[0]
@@ -165,7 +184,7 @@ func Encode64(num string, base ...string) string {
 }
 
 // Decode a string from Digits64 with optional specified base (default: DigitsDec).
-func Decode64(num string, base ...string) string {
+func Decode64(num string, base ...string) (string, error) {
 	to := DigitsDec
 	if len(base) > 0 {
 		to = base[0]
