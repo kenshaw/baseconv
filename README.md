@@ -12,7 +12,6 @@ Install the package via the following:
 ## Usage ##
 
 The baseconv package can be used similarly to the following:
-
 ```go
 // example.go
 package main
@@ -38,7 +37,6 @@ func main() {
 ```
 
 Example output:
-
 ```sh
 $ go run example.go 
 dec string: 643372930067913326838082478477533553256088688571
