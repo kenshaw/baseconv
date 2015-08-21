@@ -24,7 +24,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	fromLen := len(fromBase)
 	toLen := len(toBase)
 	numLen := len(num)
-	result := ""
+	result := make([]byte, 0)
 
 	number := make([]int, numLen)
 	for i := 0; i < numLen; i++ {
@@ -53,14 +53,14 @@ func Convert(num, fromBase, toBase string) (string, error) {
 		}
 
 		numLen = newlen
-		result = string(toBase[divide]) + result // divide is basically num % toLen (i.e. the new character)
+		result = append([]byte{toBase[divide]}, result...) // divide is basically num % toLen (i.e. the new character)
 
 		if newlen == 0 {
 			break
 		}
 	}
 
-	return result, nil
+	return string(result), nil
 }
 
 const (
