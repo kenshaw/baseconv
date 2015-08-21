@@ -121,6 +121,31 @@ func TestDec2SixtyTwo(t *testing.T) {
 	}
 }
 
+func TestDec2SixtyFour(t *testing.T) {
+	tests := map[string]string{
+		"20100203105211888256765428281344829": "ZY4eMQ2qFcP-xIh3UcZ",
+		"20110423215600563210173308035411215": "Z-5ew8KnbFn70adF2Qf",
+	}
+
+	for n, exp := range tests {
+		v0, err := Convert(n, DigitsDec, Digits64)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if exp != v0 {
+			t.Errorf("on TestDec2SixtyFour(%s) expected %s, got: %s", n, exp, v0)
+		}
+
+		v1, err := Convert(exp, Digits64, DigitsDec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if n != v1 {
+			t.Errorf("on TestSixtyFour2Dec(%s) expected %s, got: %s", exp, n, v1)
+		}
+	}
+}
+
 func TestArbitrary(t *testing.T) {
 	tests := map[string]string{
 		"355927353784509896715106760": "iihtspiphoeCrCeshhorsrrtrh",
