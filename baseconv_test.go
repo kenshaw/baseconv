@@ -172,6 +172,31 @@ func TestHex2Bin(t *testing.T) {
 	}
 }
 
+func TestHex2ThirtySix(t *testing.T) {
+	tests := map[string]string{
+		"abcdef00001234567890":             "3o47re02jzqisvio",
+		"abcdef01234567890123456789abcdef": "a65xa07491kf5zyfpvbo76g33",
+	}
+
+	for n, exp := range tests {
+		v0, err := Convert(n, DigitsHex, Digits36)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if exp != v0 {
+			t.Errorf("on TestThirtySix2Hex(%s) expected %s, got: %s", n, exp, v0)
+		}
+
+		v1, err := Convert(exp, Digits36, DigitsHex)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if n != v1 {
+			t.Errorf("on TestHex2ThirtySix(%s) expected %s, got: %s", exp, n, v1)
+		}
+	}
+}
+
 func TestSixtyTwo2Hex(t *testing.T) {
 	tests := map[string]string{
 		"cBaidlJ84Ggc5JA7IYCgv":  "6ad547ffe02477b9473f7977e4d5e17",
