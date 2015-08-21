@@ -3,7 +3,14 @@
 A simple [Go](http://www.golang.org/project/) package for converting between
 strings in arbitrary bases.
 
-This is similar in concept to PHP's [```base_convert```](http://php.net/manual/en/function.base-convert.php) 
+This package is useful when working with extremely large numbers (larger than
+int64), and need to convert them to different base (ie, decimal, hex, octal,
+etc) representations, and thus cannot use the standard go libraries.
+
+This was written for a specific use case where there was a need to
+encode/decode large numbers stored as strings in a database.
+
+This is similar in concept to PHP's [```base_convert```](http://php.net/manual/en/function.base-convert.php)
 function.
 
 ## Installation ##
@@ -45,7 +52,7 @@ func main() {
 
 Example output:
 ```sh
-$ go run example.go 
+$ go run example.go
 dec string: 643372930067913326838082478477533553256088688571
 62 string:  g4WuOGCMWgcPa70d91BezVvvvaX
 36 string:  d5wjfaew7fypqn2ka6xpofdlwns9ha3
