@@ -3,34 +3,28 @@ package baseconv
 import "testing"
 
 func TestErrors(t *testing.T) {
-	_, err := Convert("", DigitsHex, DigitsDec)
-	if err == nil {
-		t.Error("bad string should return error")
+	tests := []struct {
+		val, from, to string
+	}{
+		{"", DigitsHex, DigitsDec},
+		{"0", "", DigitsDec},
+		{"0", DigitsDec, ""},
+		{"bad", DigitsBin, DigitsDec},
+		{"BAD", DigitsHex, DigitsDec},
 	}
 
-	_, err = Convert("0", "", DigitsDec)
-	if err == nil {
-		t.Error("bad fromBase should return error")
-	}
-
-	_, err = Convert("0", DigitsDec, "")
-	if err == nil {
-		t.Error("bad toBase should return error")
-	}
-
-	_, err = Convert("bad", DigitsBin, DigitsDec)
-	if err == nil {
-		t.Error("bad string should return error")
-	}
-
-	_, err = Convert("BAD", DigitsHex, DigitsDec)
-	if err == nil {
-		t.Error("bad string should return error")
+	for i, test := range tests {
+		_, err := Convert(test.val, test.from, test.to)
+		if err == nil {
+			t.Error("test %d Convert(%#v, %#v, %#v) should produce error", i, test.val, test.from, test.to)
+		}
 	}
 }
 
 func TestConvert(t *testing.T) {
-	tests := [][]string{
+	tests := []struct {
+		from, to, val, exp string
+	}{
 		{DigitsDec, DigitsBin, "0", "0"},
 		{DigitsDec, DigitsBin, "8", "1000"},
 		{DigitsDec, DigitsBin, "15", "1111"},
@@ -75,26 +69,21 @@ func TestConvert(t *testing.T) {
 		{DigitsDec, "Christopher", "355927353784509896715106760", "iihtspiphoeCrCeshhorsrrtrh"},
 	}
 
-	for idx, test := range tests {
-		from := test[0]
-		to := test[1]
-		exp0 := test[2]
-		exp1 := test[3]
-
-		v0, err := Convert(exp0, from, to)
+	for i, test := range tests {
+		v0, err := Convert(test.val, test.from, test.to)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if exp1 != v0 {
-			t.Errorf("on test %d (%d->%d) expected %s, got: %s ", idx, len(from), len(to), exp1, v0)
+		if test.exp != v0 {
+			t.Errorf("test %d (%d->%d) expected %s, got: %s ", i, len(test.from), len(test.to), test.exp, v0)
 		}
 
-		v1, err := Convert(exp1, to, from)
+		v1, err := Convert(test.exp, test.to, test.from)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if exp0 != v1 {
-			t.Errorf("on test %d (%d->%d) expected %s, got: %s ", idx, len(to), len(from), exp0, v1)
+		if test.val != v1 {
+			t.Errorf("test %d (%d->%d) expected %s, got: %s ", i, len(test.to), len(test.from), test.val, v1)
 		}
 	}
 }
@@ -102,64 +91,50 @@ func TestConvert(t *testing.T) {
 func TestEncodeDecode(t *testing.T) {
 	v0 := "1627734050041231452076"
 
-	efuncs := []func(string, ...string) (string, error){
-		EncodeBin,
-		EncodeOct,
-		EncodeHex,
-		Encode36,
-		Encode62,
-		Encode64,
+	var tests = []struct {
+		encode func(string, ...string) (string, error)
+		decode func(string, ...string) (string, error)
+		exp    string
+	}{
+		{EncodeBin, DecodeBin, "10110000011110101011001000001100110100001101011100000100010011110101100"},
+		{EncodeOct, DecodeOct, "260365310146415340423654"},
+		{EncodeHex, DecodeHex, "583d5906686b8227ac"},
+		{Encode36, Decode36, "9jird8fbzkui7g"},
+		{Encode62, Decode62, "vhozdwL3WC8A"},
+		{Encode64, Decode64, "m3Rp1CxHwyuI"},
 	}
 
-	dfuncs := []func(string, ...string) (string, error){
-		DecodeBin,
-		DecodeOct,
-		DecodeHex,
-		Decode36,
-		Decode62,
-		Decode64,
-	}
-
-	evals := []string{
-		"10110000011110101011001000001100110100001101011100000100010011110101100",
-		"260365310146415340423654",
-		"583d5906686b8227ac",
-		"9jird8fbzkui7g",
-		"vhozdwL3WC8A",
-		"m3Rp1CxHwyuI",
-	}
-
-	for i, exp := range evals {
-		v1, err := efuncs[i](v0)
+	for i, test := range tests {
+		v1, err := test.encode(v0)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if exp != v1 {
-			t.Errorf("values %s / %s should match", exp, v1)
+		if test.exp != v1 {
+			t.Errorf("test %d values %s / %s should match", i, test.exp, v1)
 		}
 
-		v2, err := dfuncs[i](v1)
+		v2, err := test.decode(v1)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if v0 != v2 {
-			t.Errorf("values %s / %s should match", v0, v2)
+			t.Errorf("test %d values %s / %s should match", i, v0, v2)
 		}
 
-		v3, err := efuncs[i](v0, DigitsDec)
+		v3, err := test.encode(v0, DigitsDec)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if exp != v3 {
-			t.Errorf("values %s / %s should match", exp, v3)
+		if test.exp != v3 {
+			t.Errorf("test %d values %s / %s should match", i, test.exp, v3)
 		}
 
-		v4, err := dfuncs[i](v1, DigitsDec)
+		v4, err := test.decode(v1, DigitsDec)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if v0 != v4 {
-			t.Errorf("values %s / %s should match", v0, v4)
+			t.Errorf("test %d values %s / %s should match", i, v0, v4)
 		}
 	}
 }
