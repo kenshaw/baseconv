@@ -2,6 +2,7 @@
 package baseconv
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strings"
@@ -24,7 +25,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	fromLen := len(fromBase)
 	toLen := len(toBase)
 	numLen := len(num)
-	result := make([]byte, 0)
+	var result bytes.Buffer
 
 	number := make([]int, numLen)
 	for i := 0; i < numLen; i++ {
@@ -53,14 +54,20 @@ func Convert(num, fromBase, toBase string) (string, error) {
 		}
 
 		numLen = newlen
-		result = append([]byte{toBase[divide]}, result...) // divide is basically num % toLen (i.e. the new character)
+		result.WriteByte(toBase[divide])
 
 		if newlen == 0 {
 			break
 		}
 	}
 
-	return string(result), nil
+	// reverse result
+	res := result.Bytes()
+	for i, j := 0, len(res)-1; i < j; i, j = i+1, j-1 {
+		res[i], res[j] = res[j], res[i]
+	}
+
+	return string(res), nil
 }
 
 const (
