@@ -2,10 +2,9 @@
 package baseconv
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"strings"
+	"unicode/utf8"
 )
 
 // Convert num from specified base to a different base.
@@ -22,30 +21,57 @@ func Convert(num, fromBase, toBase string) (string, error) {
 		return "", errors.New("invalid toBase")
 	}
 
-	fromLen := len(fromBase)
-	toLen := len(toBase)
-	numLen := len(num)
-	var result bytes.Buffer
+	// rune counts
+	fromLenRunes := utf8.RuneCountInString(fromBase)
+	toLenRunes := utf8.RuneCountInString(toBase)
+	numLen := utf8.RuneCountInString(num)
 
+	// loop over unicode runes in original string
 	number := make([]int, numLen)
-	for i := 0; i < numLen; i++ {
-		number[i] = strings.IndexByte(fromBase, num[i])
-		if number[i] < 0 {
-			return "", errors.New(fmt.Sprintf("invalid character '%c' at %d", num[i], i))
+	for i, ipos := 0, 0; i < len(num); ipos++ {
+		r, w := utf8.DecodeRuneInString(num[i:])
+
+		// locate index in fromBase
+		found := false
+		for j, jpos := 0, 0; j < len(fromBase); jpos++ {
+			s, x := utf8.DecodeRuneInString(fromBase[j:])
+			if r == s {
+				number[ipos] = jpos
+				found = true
+				break
+			}
+
+			j += x
 		}
+
+		// if character wasn't found in fromBase, then error
+		if !found {
+			return "", errors.New(fmt.Sprintf("invalid character '%c' at position %d (%d)", r, ipos, i))
+		}
+
+		i += w
+	}
+
+	// split the runes in toBase
+	todigits := make([]rune, toLenRunes)
+	for i, ipos := 0, 0; i < len(toBase); ipos++ {
+		r, w := utf8.DecodeRuneInString(toBase[i:])
+		todigits[ipos] = r
+		i += w
 	}
 
 	// loop until whole number is converted
+	result := make([]rune, 0)
 	for {
 		divide := 0
 		newlen := 0
 
 		// perform division manually (which is why this works with big numbers)
 		for i := 0; i < numLen; i++ {
-			divide = divide*fromLen + number[i]
-			if divide >= toLen {
-				number[newlen] = int(divide / toLen)
-				divide = divide % toLen
+			divide = divide*fromLenRunes + number[i]
+			if divide >= toLenRunes {
+				number[newlen] = int(divide / toLenRunes)
+				divide = divide % toLenRunes
 				newlen++
 			} else if newlen > 0 {
 				number[newlen] = 0
@@ -54,7 +80,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 		}
 
 		numLen = newlen
-		result.WriteByte(toBase[divide])
+		result = append(result, todigits[divide])
 
 		if newlen == 0 {
 			break
@@ -62,12 +88,12 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	}
 
 	// reverse result
-	res := result.Bytes()
-	for i, j := 0, len(res)-1; i < j; i, j = i+1, j-1 {
-		res[i], res[j] = res[j], res[i]
+	//res := result.Bytes()
+	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
+		result[i], result[j] = result[j], result[i]
 	}
 
-	return string(res), nil
+	return string(result), nil
 }
 
 const (

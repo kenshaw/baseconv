@@ -21,6 +21,11 @@ func TestErrors(t *testing.T) {
 	}
 }
 
+var (
+	DigitsJapanese = `〇一二三四五六七八九`
+	DigitsThai     = `๐๑๒๓๔๕๖๗๘๙`
+)
+
 func TestConvert(t *testing.T) {
 	tests := []struct {
 		from, to, val, exp string
@@ -67,6 +72,16 @@ func TestConvert(t *testing.T) {
 		{Digits62, DigitsHex, "7N42dgm5tFLK9N8MT7fHC7", "ffffffffffffffffffffffffffffffff"},
 
 		{DigitsDec, "Christopher", "355927353784509896715106760", "iihtspiphoeCrCeshhorsrrtrh"},
+
+		// unicode
+		{DigitsDec, DigitsJapanese, "9876543210", `九八七六五四三二一〇`},
+		{DigitsDec, DigitsJapanese, "98765432100123456789", `九八七六五四三二一〇〇一二三四五六七八九`},
+
+		{DigitsDec, DigitsThai, "9876543210", `๙๘๗๖๕๔๓๒๑๐`},
+
+		{DigitsHex, DigitsJapanese, "2710", "一〇〇〇〇"},
+		{DigitsHex, DigitsThai, "2710", "๑๐๐๐๐"},
+		{DigitsHex, "0一23456789", "2710", "一0000"},
 	}
 
 	for i, test := range tests {
