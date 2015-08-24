@@ -26,22 +26,19 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	toLenRunes := utf8.RuneCountInString(toBase)
 	numLen := utf8.RuneCountInString(num)
 
-	// loop over unicode runes in original string
-	number := make([]int, numLen)
-	for i, ipos := 0, 0; i < len(num); ipos++ {
-		r, w := utf8.DecodeRuneInString(num[i:])
-
-		// locate index in fromBase
-		found := false
-		for j, jpos := 0, 0; j < len(fromBase); jpos++ {
-			s, x := utf8.DecodeRuneInString(fromBase[j:])
+	// loop over unicode runes in original string and store representative
+	// values in number -- number[i] = index(num[i], fromBase)
+	number, ipos := make([]int, numLen), 0
+	for i, r := range num {
+		jpos, found := 0, false
+		for _, s := range fromBase {
 			if r == s {
 				number[ipos] = jpos
 				found = true
 				break
 			}
 
-			j += x
+			jpos++
 		}
 
 		// if character wasn't found in fromBase, then error
@@ -49,22 +46,20 @@ func Convert(num, fromBase, toBase string) (string, error) {
 			return "", errors.New(fmt.Sprintf("invalid character '%c' at position %d (%d)", r, ipos, i))
 		}
 
-		i += w
+		ipos++
 	}
 
 	// split the runes in toBase
-	todigits := make([]rune, toLenRunes)
-	for i, ipos := 0, 0; i < len(toBase); ipos++ {
-		r, w := utf8.DecodeRuneInString(toBase[i:])
-		todigits[ipos] = r
-		i += w
+	todigits, idx := make([]rune, toLenRunes), 0
+	for _, r := range toBase {
+		todigits[idx] = r
+		idx++
 	}
 
 	// loop until whole number is converted
 	result := make([]rune, 0)
 	for {
-		divide := 0
-		newlen := 0
+		divide, newlen := 0, 0
 
 		// perform division manually (which is why this works with big numbers)
 		for i := 0; i < numLen; i++ {
@@ -88,7 +83,6 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	}
 
 	// reverse result
-	//res := result.Bytes()
 	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
 		result[i], result[j] = result[j], result[i]
 	}
