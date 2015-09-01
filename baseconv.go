@@ -43,7 +43,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 
 		// if character wasn't found in fromBase, then error
 		if !found {
-			return "", errors.New(fmt.Sprintf("invalid character '%c' at position %d (%d)", r, ipos, i))
+			return "", fmt.Errorf("invalid character '%c' at position %d (%d)", r, ipos, i)
 		}
 
 		ipos++
