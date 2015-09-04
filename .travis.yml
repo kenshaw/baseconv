@@ -1,15 +1,15 @@
 language: go
-
 go:
-  - 1.4
-  - 1.5
-  - tip
-
+- 1.4
+- 1.5
+- tip
 before_install:
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/axw/gocov/gocov
-  - go get github.com/mattn/goveralls
-
+- go get golang.org/x/tools/cmd/cover
+- go get github.com/axw/gocov/gocov
+- go get github.com/mattn/goveralls
 script:
-  - go test -v -covermode=count -coverprofile=coverage.out
-  - $HOME/gopath/bin/goveralls -service=travis-ci -coverprofile=coverage.out
+- go test -v -covermode=count -coverprofile=coverage.out
+- "$HOME/gopath/bin/goveralls -service=travis-ci -coverprofile=coverage.out"
+notifications:
+  slack:
+    secure: JPotTMjxoGGJAsgCG3VeFrbe6FpkwWODVZxk2vkK7uFVW3s/zlGGpO3P2y6kb6MqgBEwKKTpZ9SPUkF9TpgnixmFZUlnXAMs4qj3ki4GRrDWL9fu5ut3Mq8XjDUZxWxbYfN5HHU7nQ/kwVbXjRDYriHuAf9WMzaKSXS2YPdiUoAHnWhCDRVq/LmHxLizP1bbD2GR42zYCMI8m2VTdXnVQ4Bq9F9Qk+CnFHoccpWoqFsuPoq7pV1yM6+XGNlN9VdQX5KfGgtM86CuToYqDEM1/8i4CHHWrxDVJqYWCdfz6YNBA/olRu00C5rbaY/HtXGn1ZXHLnoSLsqPia6jXMU8fKB2Tx1dfkf5mu1kz7moJuDSn2mNtbHUZTxWKICkJ4hkHDxNpV6XijRNBEwKmkLGLHXGwkCp1Zh3RtiW1C82qgx02SBwQ5XNqhlHCd1WTSou3fCidsUGi/OMZJxio2Fv94lG2nhfpnWrohwtpZmWpjxnXlaWucZG7Y5qUTYNaCGJ4vn89ZDz+m1FFGjgiVYdBC4uRYj5q0UZLbkTpwwaK8dT5FIQHlEJgaBU/DGRxkLG5e4tUBn3Edm6i1J4XcS9OijS9Cvmz5jhDeU1BpQ9EkrnNKzpwtVDlwqdoMhMyKSAizA2GK8xrvXn7SxxbVm5bBzK/UvABVdlO+ZMMI8kXNs=
