@@ -16,7 +16,7 @@ func TestErrors(t *testing.T) {
 	for i, test := range tests {
 		_, err := Convert(test.val, test.from, test.to)
 		if err == nil {
-			t.Error("test %d Convert(%#v, %#v, %#v) should produce error", i, test.val, test.from, test.to)
+			t.Errorf("test %d Convert(%s, %s, %s) should produce error", i, test.val, test.from, test.to)
 		}
 	}
 }
