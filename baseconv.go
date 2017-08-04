@@ -66,7 +66,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 		for i := 0; i < numLen; i++ {
 			divide = divide*fromLenRunes + number[i]
 			if divide >= toLenRunes {
-				number[newlen] = int(divide / toLenRunes)
+				number[newlen] = divide / toLenRunes
 				divide = divide % toLenRunes
 				newlen++
 			} else if newlen > 0 {
@@ -114,122 +114,62 @@ const (
 	Digits64 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 )
 
-// EncodeBin encodes a string into DigitsBin with optional specified base (default: DigitsDec).
-func EncodeBin(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, DigitsBin)
+// EncodeBinFromDec encodes a string to DigitsBin from DigitsDec.
+func EncodeBinFromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, DigitsBin)
 }
 
-// DecodeBin decodes a string from DigitsBin with optional specified base (default: DigitsDec).
-func DecodeBin(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, DigitsBin, to)
+// DecodeBinToDec decodes a string from DigitsBin to DigitsDec.
+func DecodeBinToDec(num string) (string, error) {
+	return Convert(num, DigitsBin, DigitsDec)
 }
 
-// EncodeOct encodes a string into DigitsOct with optional specified base (default: DigitsDec).
-func EncodeOct(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, DigitsOct)
+// EncodeOctFromDec encodes a string to DigitsOct from DigitsDec.
+func EncodeOctFromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, DigitsOct)
 }
 
-// DecodeOct decodes a string from DigitsOct with optional specified base (default: DigitsDec).
-func DecodeOct(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, DigitsOct, to)
+// DecodeOctToDec decodes a string from DigitsOct to DigitsDec.
+func DecodeOctToDec(num string) (string, error) {
+	return Convert(num, DigitsOct, DigitsDec)
 }
 
-// EncodeHex encodes a string into DigitsHex with optional specified base (default: DigitsDec).
-func EncodeHex(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, DigitsHex)
+// EncodeHexFromDec encodes a string to DigitsHex from DigitsDec.
+func EncodeHexFromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, DigitsHex)
 }
 
-// DecodeHex decodes a string from DigitsHex with optional specified base (default: DigitsDec).
-func DecodeHex(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, DigitsHex, to)
+// DecodeHexToDec decodes a string from DigitsHex to DigitsDec.
+func DecodeHexToDec(num string) (string, error) {
+	return Convert(num, DigitsHex, DigitsDec)
 }
 
-// Encode36 encodes a string into Digits36 with optional specified base (default: DigitsDec).
-func Encode36(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, Digits36)
+// Encode36FromDec encodes a string to Digits36 from DigitsDec.
+func Encode36FromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, Digits36)
 }
 
-// Decode36 decodes a string from Digits36 with optional specified base (default: DigitsDec).
-func Decode36(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, Digits36, to)
+// Decode36ToDec decodes a string from Digits36 to DigitsDec.
+func Decode36ToDec(num string) (string, error) {
+	return Convert(num, Digits36, DigitsDec)
 }
 
-// Encode62 encodes a string into Digits62 with optional specified base (default: DigitsDec).
-func Encode62(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, Digits62)
+// Encode62FromDec encodes a string to Digits62 to DigitsDec.
+func Encode62FromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, Digits62)
 }
 
-// Decode62 decodes a string from Digits62 with optional specified base (default: DigitsDec).
-func Decode62(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, Digits62, to)
+// Decode62ToDec decodes a string from Digits62 to DigitsDec.
+func Decode62ToDec(num string) (string, error) {
+	return Convert(num, Digits62, DigitsDec)
 }
 
-// Encode64 encodes a string into Digits64 with optional specified base (default: DigitsDec).
-func Encode64(num string, base ...string) (string, error) {
-	from := DigitsDec
-	if len(base) > 0 {
-		from = base[0]
-	}
-
-	return Convert(num, from, Digits64)
+// Encode64FromDec encodes a string to Digits64 to DigitsDec.
+func Encode64FromDec(num string) (string, error) {
+	return Convert(num, DigitsDec, Digits64)
 }
 
-// Decode64 decodes a string from Digits64 with optional specified base (default: DigitsDec).
-func Decode64(num string, base ...string) (string, error) {
-	to := DigitsDec
-	if len(base) > 0 {
-		to = base[0]
-	}
-
-	return Convert(num, Digits64, to)
+// Decode64ToDec decodes a string from Digits64 to DigitsDec.
+func Decode64ToDec(num string) (string, error) {
+	return Convert(num, Digits64, DigitsDec)
 }

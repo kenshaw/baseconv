@@ -107,16 +107,16 @@ func TestEncodeDecode(t *testing.T) {
 	v0 := "1627734050041231452076"
 
 	var tests = []struct {
-		encode func(string, ...string) (string, error)
-		decode func(string, ...string) (string, error)
+		encode func(string) (string, error)
+		decode func(string) (string, error)
 		exp    string
 	}{
-		{EncodeBin, DecodeBin, "10110000011110101011001000001100110100001101011100000100010011110101100"},
-		{EncodeOct, DecodeOct, "260365310146415340423654"},
-		{EncodeHex, DecodeHex, "583d5906686b8227ac"},
-		{Encode36, Decode36, "9jird8fbzkui7g"},
-		{Encode62, Decode62, "vhozdwL3WC8A"},
-		{Encode64, Decode64, "m3Rp1CxHwyuI"},
+		{EncodeBinFromDec, DecodeBinToDec, "10110000011110101011001000001100110100001101011100000100010011110101100"},
+		{EncodeOctFromDec, DecodeOctToDec, "260365310146415340423654"},
+		{EncodeHexFromDec, DecodeHexToDec, "583d5906686b8227ac"},
+		{Encode36FromDec, Decode36ToDec, "9jird8fbzkui7g"},
+		{Encode62FromDec, Decode62ToDec, "vhozdwL3WC8A"},
+		{Encode64FromDec, Decode64ToDec, "m3Rp1CxHwyuI"},
 	}
 
 	for i, test := range tests {
@@ -136,7 +136,7 @@ func TestEncodeDecode(t *testing.T) {
 			t.Errorf("test %d values %s / %s should match", i, v0, v2)
 		}
 
-		v3, err := test.encode(v0, DigitsDec)
+		v3, err := test.encode(v0)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -144,7 +144,7 @@ func TestEncodeDecode(t *testing.T) {
 			t.Errorf("test %d values %s / %s should match", i, test.exp, v3)
 		}
 
-		v4, err := test.decode(v1, DigitsDec)
+		v4, err := test.decode(v1)
 		if err != nil {
 			t.Fatal(err)
 		}
