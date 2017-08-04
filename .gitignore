@@ -2,3 +2,4 @@ coverage.out
 *.pl
 *.php
 *.js
+/example/example
