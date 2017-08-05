@@ -6,10 +6,7 @@ go:
   - 1.5
   - tip
 before_install:
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
-  - go get github.com/pierrre/gotestcover
 script:
-  - gotestcover -v -race -coverprofile=coverage.out ./...
+  - go test -v -coverprofile=coverage.out
   - goveralls -service=travis-ci -coverprofile=coverage.out
