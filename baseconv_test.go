@@ -1,6 +1,9 @@
 package baseconv
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestErrors(t *testing.T) {
 	tests := []struct {
@@ -21,9 +24,11 @@ func TestErrors(t *testing.T) {
 	}
 }
 
-var (
+const (
 	DigitsJapanese = `〇一二三四五六七八九`
 	DigitsThai     = `๐๑๒๓๔๕๖๗๘๙`
+	Digits96a      = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~`!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?¿¡"
+	Digits96b      = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~`!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?¿¡"
 )
 
 func TestConvert(t *testing.T) {
@@ -82,15 +87,18 @@ func TestConvert(t *testing.T) {
 		{DigitsHex, DigitsJapanese, "2710", "一〇〇〇〇"},
 		{DigitsHex, DigitsThai, "2710", "๑๐๐๐๐"},
 		{DigitsHex, "0一23456789", "2710", "一0000"},
+
+		{DigitsHex, Digits96a, `45fb65999e10b359f34d2c73fb4b1ae01f7ecfce23f5a9908f138ef1770d7b75`, "E<jk|A(~&a$@,Zzy:K_m,`n8~l@%|RO8)UDNn~r"},
+		{strings.ToUpper(DigitsHex), Digits96b, `45FB65999E10B359F34D2C73FB4B1AE01F7ECFCE23F5A9908F138EF1770D7B75`, "e<JK|a(~&A$@,zZY:k_M,`N8~L@%|ro8)udnN~R"},
 	}
 
 	for i, test := range tests {
 		v0, err := Convert(test.val, test.from, test.to)
 		if err != nil {
-			t.Fatal(err)
+			t.Fatalf("test %d expected no error, got: %v", i, err)
 		}
 		if test.exp != v0 {
-			t.Errorf("test %d (%d->%d) expected %s, got: %s ", i, len(test.from), len(test.to), test.exp, v0)
+			t.Errorf("test %d (%d->%d) expected %s, got: %s", i, len(test.from), len(test.to), test.exp, v0)
 		}
 
 		v1, err := Convert(test.exp, test.to, test.from)
@@ -98,7 +106,7 @@ func TestConvert(t *testing.T) {
 			t.Fatal(err)
 		}
 		if test.val != v1 {
-			t.Errorf("test %d (%d->%d) expected %s, got: %s ", i, len(test.to), len(test.from), test.val, v1)
+			t.Errorf("test %d (%d->%d) expected %s, got: %s", i, len(test.to), len(test.from), test.val, v1)
 		}
 	}
 }
