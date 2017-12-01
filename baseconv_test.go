@@ -31,6 +31,44 @@ const (
 	Digits96b      = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~`!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?¿¡"
 )
 
+func TestZeroes(t *testing.T) {
+	z := strings.Repeat("0", 1000000)
+	for i, base := range []string{DigitsBin, DigitsOct, DigitsDec, DigitsHex, Digits36, Digits62, Digits64, Digits96a, Digits96b} {
+		v, err := Convert(z, base, DigitsDec)
+		if err != nil {
+			t.Fatalf("test %d base expected no error, got: %v", i, err)
+		}
+		if v != "0" {
+			t.Errorf("test %d expected 0, got: %s", i, v)
+		}
+		v, err = Convert(z, DigitsDec, base)
+		if err != nil {
+			t.Fatalf("test %d base expected no error, got: %v", i, err)
+		}
+		if v != "0" {
+			t.Errorf("test %d expected 0, got: %s", i, v)
+		}
+	}
+
+	z += "1"
+	for i, base := range []string{DigitsBin, DigitsOct, DigitsDec, DigitsHex, Digits36, Digits62, Digits64, Digits96a, Digits96b} {
+		v, err := Convert(z, base, DigitsDec)
+		if err != nil {
+			t.Fatalf("test %d base expected no error, got: %v", i, err)
+		}
+		if v != "1" {
+			t.Errorf("test %d expected 1, got: %s", i, v)
+		}
+		v, err = Convert(z, DigitsDec, base)
+		if err != nil {
+			t.Fatalf("test %d base expected no error, got: %v", i, err)
+		}
+		if v != "1" {
+			t.Errorf("test %d expected 1, got: %s", i, v)
+		}
+	}
+}
+
 func TestConvert(t *testing.T) {
 	tests := []struct {
 		from, to, val, exp string
