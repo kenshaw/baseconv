@@ -4,7 +4,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/knq/baseconv"
+	"github.com/kenshaw/baseconv"
 )
 
 func main() {
