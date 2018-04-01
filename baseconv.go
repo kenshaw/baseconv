@@ -3,23 +3,53 @@
 package baseconv
 
 import (
-	"errors"
 	"fmt"
 	"unicode/utf8"
+)
+
+// Error is a base conversion error.
+type Error string
+
+// Error satisfies the error interface.
+func (err Error) Error() string {
+	return string(err)
+}
+
+// InvalidCharacterError is an invalid character error.
+type InvalidCharacterError struct {
+	r      rune
+	pos, n int
+}
+
+// Error satisfies the error interface.
+func (err *InvalidCharacterError) Error() string {
+	return fmt.Sprintf("invalid character '%c' at position %d (%d)", err.r, err.pos, err.n)
+}
+
+// Error values.
+const (
+	// ErrInvalidNumber is the invalid number error.
+	ErrInvalidNumber Error = "invalid number"
+
+	// ErrInvalidFromBase is the invalid from base error.
+	ErrInvalidFromBase Error = "invalid fromBase"
+
+	// ErrInvalidToBase is the invalid to base error.
+	ErrInvalidToBase Error = "invalid toBase"
 )
 
 // Convert num from specified base to a different base.
 func Convert(num, fromBase, toBase string) (string, error) {
 	if num == "" {
-		return "", errors.New("invalid number")
+		return "", ErrInvalidNumber
 	}
 
 	if len(fromBase) < 2 {
-		return "", errors.New("invalid fromBase")
+		return "", ErrInvalidFromBase
 	}
 
 	if len(toBase) < 2 {
-		return "", errors.New("invalid toBase")
+		return "", ErrInvalidToBase
 	}
 
 	// rune counts
@@ -44,7 +74,7 @@ func Convert(num, fromBase, toBase string) (string, error) {
 
 		// if character wasn't found in fromBase, then error
 		if !found {
-			return "", fmt.Errorf("invalid character '%c' at position %d (%d)", r, ipos, i)
+			return "", &InvalidCharacterError{r, ipos, i}
 		}
 
 		ipos++
