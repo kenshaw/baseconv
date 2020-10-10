@@ -43,20 +43,16 @@ func Convert(num, fromBase, toBase string) (string, error) {
 	if num == "" {
 		return "", ErrInvalidNumber
 	}
-
 	if len(fromBase) < 2 {
 		return "", ErrInvalidFromBase
 	}
-
 	if len(toBase) < 2 {
 		return "", ErrInvalidToBase
 	}
-
 	// rune counts
 	fromLenRunes := utf8.RuneCountInString(fromBase)
 	toLenRunes := utf8.RuneCountInString(toBase)
 	numLen := utf8.RuneCountInString(num)
-
 	// loop over unicode runes in original string and store representative
 	// values in number -- number[i] = index(num[i], fromBase)
 	number, ipos := make([]int, numLen), 0
@@ -68,30 +64,24 @@ func Convert(num, fromBase, toBase string) (string, error) {
 				found = true
 				break
 			}
-
 			jpos++
 		}
-
 		// if character wasn't found in fromBase, then error
 		if !found {
 			return "", &InvalidCharacterError{r, ipos, i}
 		}
-
 		ipos++
 	}
-
 	// split the runes in toBase
 	todigits, idx := make([]rune, toLenRunes), 0
 	for _, r := range toBase {
 		todigits[idx] = r
 		idx++
 	}
-
 	// loop until whole number is converted
 	var result []rune
 	for {
 		divide, newlen := 0, 0
-
 		// perform division manually (which is why this works with big numbers)
 		for i := 0; i < numLen; i++ {
 			divide = divide*fromLenRunes + number[i]
@@ -104,20 +94,15 @@ func Convert(num, fromBase, toBase string) (string, error) {
 				newlen++
 			}
 		}
-
-		numLen = newlen
-		result = append(result, todigits[divide])
-
+		numLen, result = newlen, append(result, todigits[divide])
 		if newlen == 0 {
 			break
 		}
 	}
-
 	// reverse result
 	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
 		result[i], result[j] = result[j], result[i]
 	}
-
 	return string(result), nil
 }
 

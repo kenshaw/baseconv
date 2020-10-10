@@ -23,7 +23,7 @@ Install the package via the following:
 `baseconv` can be used similarly to the following:
 
 ```go
-// example/example.go
+// _example/example.go
 package main
 
 import (

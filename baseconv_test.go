@@ -15,7 +15,6 @@ func TestErrors(t *testing.T) {
 		{"bad", DigitsBin, DigitsDec},
 		{"BAD", DigitsHex, DigitsDec},
 	}
-
 	for i, test := range tests {
 		_, err := Convert(test.val, test.from, test.to)
 		if err == nil {
@@ -49,7 +48,6 @@ func TestZeroes(t *testing.T) {
 			t.Errorf("test %d expected 0, got: %s", i, v)
 		}
 	}
-
 	z += "1"
 	for i, base := range []string{DigitsBin, DigitsOct, DigitsDec, DigitsHex, Digits36, Digits62, Digits64, Digits96a, Digits96b} {
 		v, err := Convert(z, base, DigitsDec)
@@ -138,7 +136,6 @@ func TestConvert(t *testing.T) {
 		if test.exp != v0 {
 			t.Errorf("test %d (%d->%d) expected %s, got: %s", i, len(test.from), len(test.to), test.exp, v0)
 		}
-
 		v1, err := Convert(test.exp, test.to, test.from)
 		if err != nil {
 			t.Fatal(err)
@@ -151,8 +148,7 @@ func TestConvert(t *testing.T) {
 
 func TestEncodeDecode(t *testing.T) {
 	v0 := "1627734050041231452076"
-
-	var tests = []struct {
+	tests := []struct {
 		encode func(string) (string, error)
 		decode func(string) (string, error)
 		exp    string
@@ -164,7 +160,6 @@ func TestEncodeDecode(t *testing.T) {
 		{Encode62FromDec, Decode62ToDec, "vhozdwL3WC8A"},
 		{Encode64FromDec, Decode64ToDec, "m3Rp1CxHwyuI"},
 	}
-
 	for i, test := range tests {
 		v1, err := test.encode(v0)
 		if err != nil {
@@ -181,7 +176,6 @@ func TestEncodeDecode(t *testing.T) {
 		if v0 != v2 {
 			t.Errorf("test %d values %s / %s should match", i, v0, v2)
 		}
-
 		v3, err := test.encode(v0)
 		if err != nil {
 			t.Fatal(err)
@@ -189,7 +183,6 @@ func TestEncodeDecode(t *testing.T) {
 		if test.exp != v3 {
 			t.Errorf("test %d values %s / %s should match", i, test.exp, v3)
 		}
-
 		v4, err := test.decode(v1)
 		if err != nil {
 			t.Fatal(err)
@@ -247,7 +240,6 @@ func BenchmarkConvert(b *testing.B) {
 
 		{DigitsDec, "Christopher", "355927353784509896715106760", "iihtspiphoeCrCeshhorsrrtrh"},
 	}
-
 	for n := 0; n < b.N; n++ {
 		for i, test := range tests {
 			v0, err := Convert(test.val, test.from, test.to)
